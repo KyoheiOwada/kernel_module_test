@@ -6,4 +6,4 @@ Robosys_assignment
 'q'を読み込むと消灯します。
 
 ## 動画のリンク
-[動画](https://youtu.be/YBkpaI6Li-Q)
+[動画](https://youtu.be/Rhx2xAE7VXc)
