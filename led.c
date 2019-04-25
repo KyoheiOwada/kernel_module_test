@@ -1,5 +1,5 @@
 /*
- * lednipple.c
+ * led.c
  * This is Device driver to handle LEDs for Raspberry Pi.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,33 +33,33 @@ static volatile u32 *gpio_base = NULL;
 static struct timer_list mytimer;
 static int interval = 500;
 static int count = 0;
-char chi[] = {0,1,0,1,0,1,1,1,0,1,0,0,0};
-char ku[] = {1,0,1,0,1,0,1,1,1,0,0,0};
-char b[] = {1,1,1,0,1,1,1,0,1,0,1,0,1,1,1,0,0,0,1,0,1,0};
+char let1[] = {0,1,0,1,0,1,1,1,0,1,0,0,0};
+char let2[] = {1,0,1,0,1,0,1,1,1,0,0,0};
+char let3[] = {1,1,1,0,1,1,1,0,1,0,1,0,1,1,1,0,0,0,1,0,1,0};
 
 static void mytimer_fn(unsigned long arg)
 {
 	if(count < 13){
-		if(chi[count] == 0){
+		if(let1[count] == 0){
 			gpio_base[10] = 0x3 << 24;
 		}
-		else if(chi[count] == 1){
+		else if(let1[count] == 1){
 			gpio_base[7] = 0x3 << 24;
 		}
 	}
 	else if(count >= 13 && count <25){
-		if(ku[count-13] == 0){
+		if(let2[count-13] == 0){
 			gpio_base[10] = 0x3 << 24;
 		}
-		else if(ku[count-13] == 1){
+		else if(let2[count-13] == 1){
 			gpio_base[7] = 0x3 << 24;
 		}
 	}
 	else if(count >= 25 && count < 47){
-		if(b[count-25] == 0){
+		if(let3[count-25] == 0){
 			gpio_base[10] = 0x3 <<24;
 		}
-		else if(b[count-25] == 1){
+		else if(let3[count-25] == 1){
 			gpio_base[7] = 0x3 <<24;
 		}
 	}
@@ -115,7 +115,7 @@ static int __init init_mod(void)
 	add_timer(&mytimer);
 	gpio_base[index] = (gpio_base[index] & mask) | (0x9 << shift);
 
-	retval = alloc_chrdev_region(&dev,0,1,"lednipple");
+	retval = alloc_chrdev_region(&dev,0,1,"led");
 	if(retval < 0){
 		printk(KERN_ERR "alloc_chrdev_region failed.\n");
 		return retval;
@@ -128,7 +128,7 @@ static int __init init_mod(void)
 		printk(KERN_ERR "cdev_add failed. major:%d, minor:%d",MAJOR(dev),MINOR(dev));
 		return retval;
 	}
-	cls = class_create(THIS_MODULE,"lednipple");
+	cls = class_create(THIS_MODULE,"led");
 	if(IS_ERR(cls)){
 		printk(KERN_ERR "class_create failed.");
 		return PTR_ERR(cls);
